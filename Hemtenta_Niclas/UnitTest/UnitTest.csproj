@@ -63,6 +63,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hemtenta_Niclas\Hemtenta_Niclas.csproj">
+      <Project>{9c917109-ebe4-496c-809f-16288c97baaf}</Project>
+      <Name>Hemtenta_Niclas</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
