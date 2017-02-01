@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hemtenta_Niclas", "Hemtenta_Niclas\Hemtenta_Niclas.csproj", "{9C917109-EBE4-496C-809F-16288C97BAAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{E8473DD6-269D-48C4-9912-6D2B403D1A8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C917109-EBE4-496C-809F-16288C97BAAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C917109-EBE4-496C-809F-16288C97BAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C917109-EBE4-496C-809F-16288C97BAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C917109-EBE4-496C-809F-16288C97BAAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8473DD6-269D-48C4-9912-6D2B403D1A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8473DD6-269D-48C4-9912-6D2B403D1A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8473DD6-269D-48C4-9912-6D2B403D1A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8473DD6-269D-48C4-9912-6D2B403D1A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
