@@ -128,5 +128,18 @@ namespace UnitTest
             Assert.Throws<IllegalAmountException>(() => a.TransferFunds(a2, -5));
         }
 
+        [Test]
+        public void Transfer_Succeed()
+        {
+            Account a = new Account();
+            Account a2 = new Account();
+
+            a.Deposit(500);
+            a.TransferFunds(a2, 200);
+
+            Assert.That(a.Amount, Is.EqualTo(300));
+            Assert.That(a2.Amount, Is.EqualTo(200));
+        }
+
     }
 }
