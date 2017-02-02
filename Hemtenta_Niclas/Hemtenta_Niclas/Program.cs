@@ -10,6 +10,18 @@ namespace Hemtenta_Niclas
     {
         static void Main(string[] args)
         {
+            int i = int.MaxValue;
+            int n = int.MaxValue;
+            if (i + n >= int.MaxValue)
+            {
+                Console.WriteLine("TOO MACH");
+            }
+            else
+                Console.WriteLine("OKE");
+
+            Console.WriteLine("i: " + i);
+            Console.WriteLine("n: " + n);
+            Console.WriteLine("i+n: " + (int)(i + n));
         }
     }
 }
