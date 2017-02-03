@@ -6,19 +6,43 @@ using System.Threading.Tasks;
 
 namespace HemtentaTdd2017.webshop
 {
-    class MyWebshop : IWebshop
+    public class MyWebshop : IWebshop
     {
-        public IBasket Basket
+        public IBasket Basket { get; private set; }
+
+        public MyWebshop(IBasket basket)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            if (basket == null)
+                throw new NullReferenceException();
+
+            Basket = basket;
+        }
+
+        public void ResetCart()
+        {
+            Basket = new Basket();
         }
 
         public void Checkout(IBilling billing)
         {
-            throw new NotImplementedException();
+            if (billing == null)
+                throw new NullReferenceException();
+
+            billing.Pay(Basket.TotalCost);
+            //ResetCart();
+        }
+    }
+
+    public class Bill : IBilling
+    {
+        public decimal Balance { get; set; }
+
+        public void Pay(decimal amount)
+        {
+            if (Balance < amount)
+                throw new InsufficientFundsException();
+
+            Balance -= amount;
         }
     }
 }
