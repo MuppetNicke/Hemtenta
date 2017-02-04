@@ -8,6 +8,28 @@ namespace UnitTest
     [TestFixture]
     public class WebShopTest
     {
+
+        /// <summary>
+        /// 
+        /// 1. Vilka metoder och properties behöver testas?
+        /// AddProduct(), RemoveProduct(), Webshop_Checkout(), IBasket Basket, decimal Balance.
+        /// 
+        /// 2. Ska några exceptions kastas?
+        /// Exceptions som kastas är: NullReferenceException, BadPriceException, BadAmountException, InsufficientFundsException.
+        /// 
+        /// 3. Vilka är domänerna för IWebshop och IBasket?
+        /// 
+        /// IWebshop:
+        /// Basket: Kan vara null eller ett tillåtet object av IBasket
+        /// Checkout: Kan bara vara void
+        /// 
+        /// IBasket:
+        /// AddProduct och RemoveProduct kan bara vara void
+        /// TotalCost: decimaltal, MaxValue, MinValue, MinusOne, Zero, One
+        /// 
+        /// </summary>
+
+
         [Test]
         public void AddProduct_Succed()
         {
