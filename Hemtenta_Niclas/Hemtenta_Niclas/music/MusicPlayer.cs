@@ -10,8 +10,25 @@ namespace HemtentaTdd2017.music
     {
 
         private List<ISong> SongsInQueue = new List<ISong>();
+        private List<ISong> Songs = new List<ISong>
+        {
+            new Song("song1"),
+            new Song("song2"),
+            new Song("song3"),
+            new Song("song4"),
+            new Song("song5"),
+            new Song("Nicke's kärleksballader"),
+            new Song("Best of Nicke '65"),
+            new Song("Nicke's best Disco hits!")
+        };
 
-        private FakeMediaDatabase _MediaDatabase = new FakeMediaDatabase();
+        //private FakeMediaDatabase _MediaDatabase = new FakeMediaDatabase();
+        private IMediaDatabase mediaDatabase;
+
+        public MusicPlayer(IMediaDatabase mediaDatabase)
+        {
+            this.mediaDatabase = mediaDatabase;
+        }
 
         public NickPod SoundPlayer = new NickPod();
 
@@ -22,11 +39,11 @@ namespace HemtentaTdd2017.music
             if (string.IsNullOrWhiteSpace(search))
                 throw new NullReferenceException();
 
-            _MediaDatabase.OpenConnection();
+            mediaDatabase.OpenConnection();
 
-            List<ISong> fetchedSongs = _MediaDatabase.FetchSongs(search);
+            List<ISong> fetchedSongs = mediaDatabase.FetchSongs(search);
             SongsInQueue.AddRange(fetchedSongs);
-            _MediaDatabase.CloseConnection();
+            mediaDatabase.CloseConnection();
         }
 
         public void NextSong()
@@ -65,59 +82,59 @@ namespace HemtentaTdd2017.music
         }
     }
 
-    public class FakeMediaDatabase : IMediaDatabase
-    {
-        public bool IsConnected { get; private set; }
+    //public class FakeMediaDatabase : IMediaDatabase
+    //{
+    //    public bool IsConnected { get; private set; }
 
-        public List<Song> Songs = new List<Song>()
-        {
-            new Song("song1"),
-            new Song("song2"),
-            new Song("song3"),
-            new Song("song4"),
-            new Song("song5"),
-            new Song("Nicke's kärleksballader"),
-            new Song("Best of Nicke '65"),
-            new Song("Nicke's best Disco hits!")
-        };
+    //    public List<Song> Songs = new List<Song>()
+    //    {
+    //        new Song("song1"),
+    //        new Song("song2"),
+    //        new Song("song3"),
+    //        new Song("song4"),
+    //        new Song("song5"),
+    //        new Song("Nicke's kärleksballader"),
+    //        new Song("Best of Nicke '65"),
+    //        new Song("Nicke's best Disco hits!")
+    //    };
 
-        public void CloseConnection()
-        {
-            if (IsConnected)
-                IsConnected = false;
-            else
-                throw new DatabaseClosedException();
-        }
+    //    public void CloseConnection()
+    //    {
+    //        if (IsConnected)
+    //            IsConnected = false;
+    //        else
+    //            throw new DatabaseClosedException();
+    //    }
 
-        public List<ISong> FetchSongs(string search)
-        {
-            List<ISong> fetchedSongs = new List<ISong>();
+    //    public List<ISong> FetchSongs(string search)
+    //    {
+    //        List<ISong> fetchedSongs = new List<ISong>();
 
-            if (string.IsNullOrWhiteSpace(search))
-                throw new NullReferenceException();
+    //        if (string.IsNullOrWhiteSpace(search))
+    //            throw new NullReferenceException();
 
-            if (IsConnected)
-            {
-                foreach (Song song in Songs)
-                {
-                    if (song.Title.ToLower().Contains(search.ToLower()))
-                        fetchedSongs.Add(song);
-                }
-            }
-            else
-                throw new DatabaseClosedException();
+    //        if (IsConnected)
+    //        {
+    //            foreach (Song song in Songs)
+    //            {
+    //                if (song.Title.ToLower().Contains(search.ToLower()))
+    //                    fetchedSongs.Add(song);
+    //            }
+    //        }
+    //        else
+    //            throw new DatabaseClosedException();
 
-            return fetchedSongs;
-        }
+    //        return fetchedSongs;
+    //    }
 
-        public void OpenConnection()
-        {
-            if (!IsConnected)
-                IsConnected = true;
-            else
-                throw new DatabaseAlreadyOpenException();
-        }
-    }
+    //    public void OpenConnection()
+    //    {
+    //        if (!IsConnected)
+    //            IsConnected = true;
+    //        else
+    //            throw new DatabaseAlreadyOpenException();
+    //    }
+    //}
 
     public class Song : ISong
     {

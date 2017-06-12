@@ -2,28 +2,54 @@
 using NUnit.Framework;
 using HemtentaTdd2017;
 using HemtentaTdd2017.blog;
+using Moq;
 
 namespace UnitTest
 {
+
     [TestFixture]
     public class BlogTest
     {
-        [TestCase(null, "hejsan")]
+
+        private Mock<IAuthenticator> auth;
+
+
+        [SetUp]
+        public void SetUp()
+        {
+            auth = new Mock<IAuthenticator>();
+        }
+
+        [TestCase(null, "guest")]
         [TestCase("niclas", null)]
         [TestCase(null, null)]
         public void LoginUser_Fail_NullProperties_NullReferenceException(string name, string password)
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User(name);
             u.Password = password;
 
             Assert.Throws<NullReferenceException>(() => b.LoginUser(u));
         }
 
+        [TestCase("niclas", "guest1")]
+        [TestCase("nicke", "guest2")]
+        [TestCase("nick", "guest2")]
+        public void LoginUser_Fail_WrongPasswordException(string name, string password)
+        {
+            Blog b = new Blog(auth.Object);
+            User u = new User(name);
+            u.Password = password;
+            auth.Setup(x => x.GetUserFromDatabase(name)).Returns(new User(name));
+
+
+            Assert.Throws<WrongPasswordException>(() => b.LoginUser(u));
+        }
+
         [Test]
         public void LoginUser_Fail_NullReferenceException()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
 
             Assert.Throws<NullReferenceException>(() => b.LoginUser(null));
         }
@@ -31,20 +57,21 @@ namespace UnitTest
         [Test]
         public void LoginUser_Fail_UserNotFoundException()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User("BLABLA");
-            u.Password = "hejsan";
+            u.Password = "guest";
 
             Assert.Throws<UserNotFoundException>(() => b.LoginUser(u));
         }
 
-        [TestCase("niclas", "hejsan")]
-        [TestCase("nicke", "hejsan")]
-        [TestCase("nick", "hejsan")]
+        [TestCase("niclas", "guest")]
+        [TestCase("nicke", "guest")]
+        [TestCase("nick", "guest")]
         public void LoginUser_Succeed_True(string name, string password)
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User(name);
+            auth.Setup(x => x.GetUserFromDatabase(name)).Returns(new User(name));
             u.Password = password;
 
             b.LoginUser(u);
@@ -52,12 +79,12 @@ namespace UnitTest
             Assert.That(b.UserIsLoggedIn, Is.EqualTo(true));
         }
 
-        [TestCase(null, "hejsan")]
+        [TestCase(null, "guest")]
         [TestCase("niclas", null)]
         [TestCase(null, null)]
         public void LogoutUser_Fail_NullProperties_NullReferenceException(string name, string password)
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User(name);
             u.Password = password;
 
@@ -67,7 +94,7 @@ namespace UnitTest
         [Test]
         public void LogoutUser_Fail_NullReferenceException()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
 
             Assert.Throws<NullReferenceException>(() => b.LogoutUser(null));
         }
@@ -75,21 +102,22 @@ namespace UnitTest
         [Test]
         public void LogoutUser_Fail_UserNotFoundException()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User("BLABLA");
             u.Password = "hejsan";
 
             Assert.Throws<UserNotFoundException>(() => b.LogoutUser(u));
         }
 
-        [TestCase("niclas", "hejsan")]
-        [TestCase("nicke", "hejsan")]
-        [TestCase("nick", "hejsan")]
+        [TestCase("niclas", "guest")]
+        [TestCase("nicke", "guest")]
+        [TestCase("nick", "guest")]
         public void LogoutUser_Succeed_True(string name, string password)
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User(name);
             u.Password = password;
+            auth.Setup(x => x.GetUserFromDatabase(name)).Returns(new User(name));
 
             b.LoginUser(u);
             b.LogoutUser(u);
@@ -100,7 +128,7 @@ namespace UnitTest
         [Test]
         public void PublishPage_Fail_NullReferenceException()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
 
             Assert.Throws<NullReferenceException>(() => b.PublishPage(null));
         }
@@ -110,7 +138,7 @@ namespace UnitTest
         [TestCase(null, null)]
         public void PublishPage_Fail_NullProperties_NullReferenceException(string title, string content)
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             Page p = new Page()
             {
                 Title = title,
@@ -123,9 +151,10 @@ namespace UnitTest
         [Test]
         public void PublishPage_Fail_NotLoggedIn_False()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User("niclas");
-            u.Password = "hejsan";
+            u.Password = "guest";
+            auth.Setup(x => x.GetUserFromDatabase(u.Name)).Returns(new User(u.Name));
             Page p = new Page()
             {
                 Title = "The Witcher",
@@ -143,9 +172,10 @@ namespace UnitTest
         [Test]
         public void PublishPage_Succeed_True()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User("niclas");
-            u.Password = "hejsan";
+            u.Password = "guest";
+            auth.Setup(x => x.GetUserFromDatabase(u.Name)).Returns(new User(u.Name));
             Page p = new Page()
             {
                 Title = "The Witcher",
@@ -172,7 +202,7 @@ namespace UnitTest
         [TestCase(" ", " ", " ")]
         public void SendEmail_Fail_NullOrEmptyParameter_0(string address, string caption, string body)
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             int result = b.SendEmail(address, caption, body);
 
             Assert.That(result, Is.EqualTo(0));
@@ -181,9 +211,10 @@ namespace UnitTest
         [Test]
         public void SendEmail_Fail_NotLoggedIn_0()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User("niclas");
             u.Password = "hejsan";
+            auth.Setup(x => x.GetUserFromDatabase(u.Name)).Returns(new User(u.Name));
 
             //Just in case...
             b.LogoutUser(u);
@@ -196,9 +227,10 @@ namespace UnitTest
         [Test]
         public void SendEmail_Succeed_1()
         {
-            Blog b = new Blog();
+            Blog b = new Blog(auth.Object);
             User u = new User("niclas");
-            u.Password = "hejsan";
+            u.Password = "guest";
+            auth.Setup(x => x.GetUserFromDatabase(u.Name)).Returns(new User(u.Name));
 
             b.LoginUser(u);
 

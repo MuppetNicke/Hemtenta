@@ -1,0 +1,5 @@
+Red - Skapa ett test som failar. Men testet ska skrivas som om funktionen fungerade som det var tänkt.
+
+Green - Skriv om testet så att det går igenom. Skriv så lite som möjligt för att gå igenom.
+
+Refactor - Strukturera om koden för att göra den antingen mer effektiv eller läsbar.
