@@ -36,7 +36,7 @@ namespace HemtentaTdd2017.bank
             if (Amount - amount < 0)
                 throw new InsufficientFundsException();
 
-            if (amount < 0 || amount > double.MaxValue)
+            if (amount < 0 || amount >= double.MaxValue)
                 throw new IllegalAmountException();
 
             if (double.IsInfinity(destination.Amount + amount))

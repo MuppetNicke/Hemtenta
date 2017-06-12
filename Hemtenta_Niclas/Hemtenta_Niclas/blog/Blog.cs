@@ -8,6 +8,20 @@ namespace HemtentaTdd2017.blog
 {
     public class Blog : IBlog
     {
+
+        private IAuthenticator auth;
+
+        public Blog(IAuthenticator auth)
+        {
+            this.auth = auth;
+        }
+
+        public IAuthenticator Auth
+        {
+            get { return auth; }
+            set { auth = value; }
+        }
+
         public bool UserIsLoggedIn { get; private set; }
 
         public void LoginUser(User u)
@@ -18,11 +32,13 @@ namespace HemtentaTdd2017.blog
             if (string.IsNullOrWhiteSpace(u.Name) || string.IsNullOrWhiteSpace(u.Password))
                 throw new NullReferenceException();
 
-            FakeAuthenticator fa = new FakeAuthenticator();
-            User ou = fa.GetUserFromDatabase(u.Name);
+            var getUser = auth.GetUserFromDatabase(u.Name);
 
-            if (ou == null)
+            if (getUser == null)
                 throw new UserNotFoundException();
+
+            if (u.Password != getUser.Password)
+                throw new WrongPasswordException();
 
             UserIsLoggedIn = true;
         }
@@ -35,13 +51,13 @@ namespace HemtentaTdd2017.blog
             if (string.IsNullOrWhiteSpace(u.Name) || string.IsNullOrWhiteSpace(u.Password))
                 throw new NullReferenceException();
 
-            FakeAuthenticator fa = new FakeAuthenticator();
-            User ou = fa.GetUserFromDatabase(u.Name);
+            if (u == null)
+                throw new NullReferenceException();
 
-            if (ou == null)
+            if (auth.GetUserFromDatabase(u.Name) == null)
                 throw new UserNotFoundException();
-
-            UserIsLoggedIn = false;
+            else
+                UserIsLoggedIn = false;
         }
 
         public bool PublishPage(Page p)
@@ -73,24 +89,26 @@ namespace HemtentaTdd2017.blog
 
     public class UserNotFoundException : Exception { }
 
-    internal class FakeAuthenticator : IAuthenticator
-    {
+    public class WrongPasswordException : Exception { }
 
-        private List<User> Users = new List<User>
-        {
-            new User("") { Name = "niclas", Password = "hejsan" },
-            new User("") { Name = "nicke", Password = "hejsan" },
-            new User("") { Name = "nick", Password = "hejsan" }
-        };
-        public User GetUserFromDatabase(string username)
-        {
-            foreach (User user in Users)
-            {
-                if (user.Name == username)
-                    return user;
-            }
+    //internal class FakeAuthenticator : IAuthenticator
+    //{
 
-            return null;
-        }
-    }
+    //    private List<User> Users = new List<User>
+    //    {
+    //        new User("") { Name = "niclas", Password = "hejsan" },
+    //        new User("") { Name = "nicke", Password = "hejsan" },
+    //        new User("") { Name = "nick", Password = "hejsan" }
+    //    };
+    //    public User GetUserFromDatabase(string username)
+    //    {
+    //        foreach (User user in Users)
+    //        {
+    //            if (user.Name == username)
+    //                return user;
+    //        }
+
+    //        return null;
+    //    }
+    //}
 }
